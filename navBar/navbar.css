@@ -1,0 +1,111 @@
+@import url('https://fonts.googleapis.com/css2?family=Andika+New+Basic&family=Barlow+Semi+Condensed:wght@200&family=Josefin+Sans:ital,wght@0,200;1,100;1,300&family=Kulim+Park:wght@200&family=Outfit:wght@300&family=Press+Start+2P&family=Road+Rage&family=Roboto+Mono:wght@100&family=VT323&display=swap');
+*{
+  margin: 0;
+  box-sizing: border-box;
+}
+.image{
+  height: 60px;
+  border-radius: 50%;
+  margin: 10px 50px;
+}
+body{
+  font-family: 'Roboto Mono', monospace;
+  padding: 90px 20px 0;
+}
+header{
+  background-color: rgb(66, 66, 66);
+  height: 80px;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 3;
+}
+.nav{
+  display: flex;
+  justify-content: space-between;
+  max-width: 992px;
+  margin: 0 auto;
+}
+.nav-link{
+  color: aliceblue;
+  text-decoration: none;
+}
+.logo{
+  font-size: 30px;
+  font-weight: bold;
+  padding: 0 40px;
+  line-height: 80px;
+}
+.nav-menu{
+  display: flex;
+  margin-right: 40px;
+  list-style: none;
+}
+.nav-menu-item{
+  font-size: 18px;
+  margin: 0 10px;
+  line-height: 80px;
+  text-transform: uppercase;
+  width: max-content;
+}
+.nav-menu-link{
+  padding: 8px 12px;
+  border-radius: 4px;
+}
+.nav-menu-link:hover, .nav-menu-link_active{
+  transition: .5s;
+}
+.nav-toggle{
+  color: white;
+  border: 4px;
+  background: none;
+  font-size: 30px;
+  padding:0px 20px;
+  line-height: 60px;
+  cursor: pointer;
+  display: none;
+}
+@media(max-width:900px){
+  body{
+    padding-top: 90px;
+  }
+  .header{
+    height: 60px;
+  }
+  .logo{
+    font-size: 25px;
+    padding: 0 20px;
+    line-height: 60px;
+  }
+  .nav-menu{
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    background-color: rgb(53, 46, 46);
+    position: fixed;
+    top: 80px;
+    width: 100%;
+    padding: 20px 0;
+    height: calc(100% - 60px);
+    overflow-y: auto;
+    left:100%;
+    transition: left 0.3s;
+  }
+  .nav-menu-item{
+    line-height: 70px;
+  }
+  .nav-menu-link:hover, .nav-menu-link_active{
+    background: none;
+    color: coral;
+  }
+  .nav-toggle{
+    display: block;
+  }
+  .nav-menu_visible{
+    left: 0;
+  }
+  .nav-toggle:focus:not(:focus-visible){
+    outline: none;
+  }
+}

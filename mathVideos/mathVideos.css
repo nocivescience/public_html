@@ -1,0 +1,16 @@
+.list-group{
+  margin-top: 15px;
+  margin-left: 40px;
+  margin-right: 50px;
+  min-width: 200px;
+  max-width: 1000px;
+  display: flex;
+  justify-content: center;
+}
+#navbar{
+  min-width: 450px;
+  
+}
+header{
+  z-index: 20;
+}

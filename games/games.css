@@ -1,0 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Andika+New+Basic&family=Barlow+Semi+Condensed:wght@200&family=Josefin+Sans:ital,wght@0,200;1,100;1,300&family=Kulim+Park:wght@200&family=Outfit:wght@300&family=Press+Start+2P&family=Road+Rage&family=Roboto+Mono:wght@100&family=VT323&display=swap');
+.grid-container{
+  font-family: 'Roboto', sans-serif;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  grid-template-columns: auto auto auto;
+}
+.card{
+  margin: 20px;
+}
+.btn{
+  box-shadow: 2px 4px 10px black;
+}
+#busqueda{
+  box-shadow: none;
+}
+header{
+  z-index: 1;
+}

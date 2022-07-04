@@ -1,0 +1,164 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@200&display=swap');
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #474747;
+  color: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 80vh;
+  margin: 0;
+  overflow: hidden;
+  position: relative;
+  font-family: 'Montserrat', sans-serif;
+}
+
+#centering{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#conteo{
+  position: relative;
+  top: 10px;
+  color: #fff;
+}
+
+h1 {
+  margin: 20px 0 0;
+}
+
+.game-container {
+  padding: 20px 30px;
+  position: relative;
+  margin: auto;
+  height: auto;
+  width: auto;
+  display: flex;
+}
+.part{
+  display: flex;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  background-color: red;
+  justify-content: center;
+  align-items: center;
+  margin: 4px;
+}
+.figure-container {
+  fill: transparent;
+  stroke: #fff;
+  stroke-width: 4px;
+  stroke-linecap: round;
+}
+
+.word {
+  display: flex;
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.letter {
+  border-bottom: 3px solid #2980b9;
+  display: inline-flex;
+  font-size: 30px;
+  align-items: center;
+  justify-content: center;
+  margin: 0 3px;
+  height: 50px;
+  width: 20px;
+}
+
+.popup-container {
+  background-color: rgba(0, 0, 0, 0.3);
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.popup {
+  background: #2980b9;
+  border-radius: 5px;
+  box-shadow: 0 15px 10px 3px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  text-align: center;
+}
+
+.popup button {
+  cursor: pointer;
+  background-color: #fff;
+  color: #444444;
+  border: 0;
+  margin-top: 20px;
+  padding: 12px 20px;
+  font-size: 16px;
+  border-radius: 4px;
+}
+
+.popup button:active {
+  transform: scale(0.98);
+}
+
+.popup button:focus {
+  outline: 0;
+}
+
+.notification-container {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 10px 10px 10px 10px;
+  padding: 15px 20px;
+  position: absolute;
+  bottom: -50px;
+  transition: transform 0.3s ease-in-out;
+  transform: scale(0.1);
+}
+
+.notification-container p {
+  margin: 0;
+}
+
+.notification-container.show {
+  transform: translateY(-250px);
+}
+
+@keyframes turning{
+  0% {transform: rotateX(0deg);}
+  100%{ transform:  rotateX( 360deg);}
+}
+.turn{
+  animation-name: turning;
+  animation-timing-function: ease-in-out;
+  animation-duration: 1s;
+  animation-iteration-count: 1;
+}
+
+#wrong-letters{
+  font-size: 20px;
+}
+.shake{
+  animation-name: shaking;
+  animation-timing-function: ease-in-out;
+  animation-duration: .3s;
+  animation-iteration-count: infinite;
+}
+@keyframes shaking{
+  0%,100% {transform: scale(1);}
+  50%{ transform:  scale(1.2);}
+}
+/* #centering :not(.popup){
+  filter: blur(6px);
+} */

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="" href="../../navBar/navbar.css">
+    
+    <title>Document</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@100&display=swap');
+        *{
+            /* font-family: 'Press Start 2P', cursive; */
+            font-family: 'Sarabun';
+        }
+        body{
+            background: url('./imagen.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        .container{
+            width: 100%;
+            margin-left: 75%;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+        h1{
+            color: rgb(255, 248, 239);
+            text-align: center;
+            display: flex;
+            max-width: 100px;
+        }
+        #canvas{
+            background-color: rgba(255, 209, 60, 0.582);
+            box-shadow: black 2px 3px 4px;
+            width: 120%;
+        }
+        .moving{
+            animation: dance .3s linear;
+        }
+        @keyframes dance{
+            0%,100%{
+                transform: rotateZ(0deg)
+            }
+            25%{
+                transform: rotateZ(10deg)
+            }
+            75%{
+                transform: rotateZ(-10deg)
+            }
+        }
+    </style>
+</head>
+<body class="d-flex" style="flex-direction: column; width: 40%;">
+
+    <header>
+        <nav class="nav">
+            <img class="image" src="../../navBar/imageProfile.jpg" alt="">
+          <button class="nav-toggle" aria-label="Abrir menú">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-justify" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M2 12.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/>
+            </svg>
+          </button>
+          <ul class="nav-menu">
+            <li class="nav-menu-item">
+              <a href="" class="nav-menu-link nav-link">Home</a>
+            </li>
+            <li class="nav-menu-item">
+              <a href="./games/games.html" class="nav-menu-link nav-link">Games</a>
+            </li>
+            <li class="nav-menu-item">
+              <a href="./mathVideos/mathVideos.html" class="nav-menu-link nav-link">Math</a>
+            </li>
+            <li class="nav-menu-item">
+              <a href="./chemistry/chemistry.html" class="nav-menu-link nav-link">Chemitry</a>
+            </li>
+            <li class="nav-menu-item">
+              <a href="#" class="nav-menu-link nav-link">Physics</a>
+            </li>
+            <li class="nav-menu-item">
+              <a href="#" class="nav-menu-link nav-link nav-menu-link_active">Contacto</a>
+            </li>
+          </ul>
+        </nav>
+      </header>
+    <div class="container">
+        <!-- <h1>การกลับมาของจินจิน</h1> -->
+        <canvas id="canvas" width="500px" height="400px">  
+        </canvas>
+    </div>
+    <script>
+        const stateRunning=100;
+        const stateLosing=2;
+        let TICK=280;
+        const squareSize=10;
+        const boardWidth=50;
+        const boardHeight=40;
+        const growScale=10;
+        const canvas=document.getElementById('canvas');
+        const ctx=canvas.getContext('2d');
+        const eatSound=new Audio('./laser.m4a');
+        const themeSound=new Audio('./theme.mp3');
+        let score=0;
+        const direction_map={
+            'A':[-1,0],
+            'D':[ 1,0],
+            'S':[0, 1],
+            'W':[0,-1],
+            'a':[-1,0],
+            'd':[ 1,0],
+            's':[0, 1],
+            'w':[0,-1],
+        }
+        let state={
+            canvas:null,
+            context:null,
+            snake:[{x:0,y:0}], //sacar parentesis
+            direction:{x:1,y:0}, //sacar parentesis
+            prey:{x:0,y:0},
+            growing:0,
+            runState:stateRunning,
+        }
+        
+        function randomXY(){
+            return {
+                x:parseInt(Math.random()*boardWidth),
+                y:parseInt(Math.random()*boardHeight),
+            }
+        }
+        function tick(){ //aca se ve la velocidad
+            const head=state.snake[0];
+            const dx=state.direction.x;
+            const dy=state.direction.y;
+            const highestIndex=state.snake.length-1;
+            let vel=1;
+            let tail={};
+            let interval=TICK;
+            Object.assign(tail,state.snake[state.snake.length-1]);
+            let didScore=(
+                head.x===state.prey.x&&head.y===state.prey.y
+            );
+            if(state.runState===stateRunning){
+                for(let idx=highestIndex;idx>-1;idx--){
+                    const sq=state.snake[idx];
+                    if(idx===0){
+                        sq.x+=dx;
+                        sq.y+=dy;
+                    }else{
+                        sq.x=state.snake[idx-1].x;
+                        sq.y=state.snake[idx-1].y;
+                    }
+                }
+            }else if(state.runState===stateLosing){ //aca puse state.statelosing
+                interval=10;
+                if(state.snake.length>0){
+                    state.snake.splice(0,1);
+                }
+                if(state.snake.length===0){
+                    state.runState=stateRunning;
+                    state.snake.push(randomXY());
+                    state.prey=randomXY();
+                }
+            }
+            if(detectCollision()){ //aca solo puso detectCollision
+                state.runState=stateLosing;
+                state.growing=0;
+                score=0;
+            }
+            if(didScore){
+                state.growing +=growScale;
+                score++;
+                eatSound.volume=.4;
+                eatSound.play();
+                if (score===3){
+                    TICK=150
+    
+                }else if(score===5){
+                    TICK=100
+                }else if(score===7){
+                    TICK=60
+                }else if(score===10){
+                    TICK=30
+                }
+                state.prey=randomXY();
+            }
+            if(state.growing>0){
+                state.snake.push(tail);
+                state.growing-=1;
+                // document.querySelector('h1').classList.toggle('moving');
+            }
+            requestAnimationFrame(draw);
+            setTimeout(tick,interval); //poner TICK
+        }
+        function detectCollision(){
+            const head=state.snake[0];
+            // if(head.x<0||head.x>=boardWidth||head.y>=boardHeight||head.y<0){return true;}
+            if(head.x<0){head.x=canvas.width/growScale}
+            else if(head.x>canvas.width/growScale){head.x=0}
+            if(head.y<0){head.y=canvas.height/growScale}
+            else if(head.y>canvas.height/growScale){head.y=0}
+            for(var idx=1;idx<state.snake.length;idx++){
+                const sq=state.snake[idx];
+                if(sq.x===head.x&&sq.y===head.y){
+                    TICK=280;
+                    themeSound.pause()
+                    themeSound.currentTime=0;
+                    themeSound.play();
+                    return true}
+            }
+            return false;
+        }
+        function drawPixel(color,x,y){
+            state.context.fillStyle=color;
+            state.context.strokeRect(x*squareSize,
+                y*squareSize,
+                squareSize,
+                squareSize,)
+            state.context.fillRect(
+                x*squareSize,
+                y*squareSize,
+                squareSize,
+                squareSize,
+            )
+            state.context.fillStyle='rgba(0, 0, 0, .4';
+        }
+        function drawScore(){
+            ctx.font='30px VT323';
+            ctx.fillText(`คะแนน: ${score}`, canvas.width-300,30)
+        }
+        function draw(){
+            state.context.clearRect(0,0,500,500);
+            for(var idx=0;idx<state.snake.length;idx++){
+                const {x,y}=state.snake[idx];
+                drawPixel(idx%2===0||idx%3===0?'red':'black',x,y);
+            };
+            const {x,y}=state.prey;
+            drawPixel('yellow',x,y);
+            drawScore();
+        }
+        window.onload=function(){
+            state.canvas=document.querySelector('canvas');
+            state.context=state.canvas.getContext('2d');
+            window.onkeydown=function(e){
+                const direction=direction_map[e.key];
+                // console.log(direction)
+                if(direction){
+                    const [x,y]=direction;
+                    themeSound.play()
+                    if(-x!==state.direction.x&&-y!==state.direction.y){
+                        state.direction.x=x;
+                        state.direction.y=y;
+                    }
+                }
+            };
+            tick();
+        }
+        // console.log(state.snake);
+    </script>
+    <script src="../../navBar/navbar.js"></script>
+</body>
+</html>

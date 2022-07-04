@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <title>Document</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" type="" href="../../navBar/navbar.css">
+  <script src="http://code.jquery.com/jquery.min.js"></script>
+    <style>
+      body{
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+      }
+      .CONTAINER {
+          background-color: rgb(255, 255, 255);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          max-width: 100%;
+      }
+      #canvas {
+        border: 1px solid rgb(78, 78, 78);
+        width: 100%;
+      }
+      .myLetter{
+          color: rgb(48, 48, 48);
+          transform: rotate(0deg);
+          margin: 30px;
+      }
+      .containerLetter{
+          transform: rotate(0deg);
+      }
+    </style>
+    <script defer src="../../navBar/navbar.js"></script>
+    <script>
+      $(function () {
+        // canvas related variables
+        // references to canvas and its context and its position on the page
+        var canvas = document.getElementById('canvas')
+        var ctx = canvas.getContext('2d')
+        var $canvas = $('#canvas')
+        var canvasOffset = $canvas.offset()
+        var offsetX = canvasOffset.left
+        var offsetY = canvasOffset.top
+        var scrollX = $canvas.scrollLeft()
+        var scrollY = $canvas.scrollTop()
+        var cw = canvas.width
+        var ch = canvas.height
+        // flag to indicate a drag is in process
+        // and the last XY position that has already been processed
+        var isDown = false
+        var lastX
+        var lastY
+        // the radian value of a full circle is used often, cache it
+        var PI2 = Math.PI * 2
+        // variables relating to existing circles
+        var circles = []
+        var stdRadius = 20
+        var draggingCircle = -1
+        // clear the canvas and redraw all existing circles
+        function drawAll() {
+          ctx.clearRect(0, 0, cw, ch)
+          for (var i = 0; i < circles.length; i++) {
+            var circle = circles[i]
+            ctx.beginPath()
+            ctx.arc(circle.x, circle.y, circle.radius, 0, PI2)
+            ctx.closePath()
+            ctx.fillStyle = circle.color
+            ctx.fill();
+            ctx.font = '15px Arial', 
+            ctx.strokeText(circle.stroke, circle.x-3, circle.y+5)
+          }
+        }
+        function handleMouseDown(e) {
+          // tell the browser we'll handle this event
+          e.preventDefault()
+          e.stopPropagation()
+          // save the mouse position
+          // in case this becomes a drag operation
+          lastX = parseInt(e.clientX - offsetX)
+          lastY = parseInt(e.clientY - offsetY)
+          // hit test all existing circles
+          var hit = -1
+          for (var i = 0; i < circles.length; i++) {
+            // if(circles.length>4){
+            // circles.length=4
+            // }
+            var circle = circles[i]
+            var dx = lastX - circle.x
+            var dy = lastY - circle.y
+            if (dx * dx + dy * dy < circle.radius * circle.radius) {
+              hit = i
+            };
+            canvas.addEventListener('click',()=>{
+              if(circle.stroke=='+'){
+                circle.x+=1
+              }else{
+                circle.x-=1
+              }
+            })
+          }
+          // if no hits then add a circle
+          // if hit then set the isDown flag to start a drag
+          if (hit < 0) {
+            circles.push({
+              x: lastX,
+              y: lastY,
+              radius: stdRadius,
+              color: randomColor(),
+              stroke: theSign()
+            })
+            drawAll();
+          } else {
+            draggingCircle = circles[hit]
+            isDown = true
+          }
+        }
+        function handleMouseUp(e) {
+          // tell the browser we'll handle this event
+          e.preventDefault()
+          e.stopPropagation()
+          // stop the drag
+          isDown = false
+        }
+        function myTitles(){
+            anodo=document.getElementById('anodo');
+            catodo=document.getElementById('catodo');
+            anodo.innerHTML=`
+                <div class="containerLetter">
+                ${anodo.id
+                    .split('')
+                    .map(
+                        letter=>`
+                            <div class="myLetter">
+                                ${letter}
+                            </div>
+                        `
+                    ).join('')
+                }
+                </div>
+            `;
+            catodo.innerHTML=`
+                <div class="containerLetter">
+                ${catodo.id
+                    .split('')
+                    .map(
+                        letter=>`
+                            <div class="myLetter">
+                                ${letter}
+                            </div>
+                        `
+                    ).join('')
+                }
+                </div>
+            `;
+        }
+        function handleMouseMove(e) {
+          // if we're not dragging, just exit
+          if (!isDown) {
+            return
+          }
+          // tell the browser we'll handle this event
+          e.preventDefault()
+          e.stopPropagation()
+          // get the current mouse position
+          mouseX = parseInt(e.clientX - offsetX)
+          mouseY = parseInt(e.clientY - offsetY)
+          // calculate how far the mouse has moved
+          // since the last mousemove event was processed
+          var dx = mouseX - lastX
+          var dy = mouseY - lastY
+          // reset the lastX/Y to the current mouse position
+          lastX = mouseX
+          lastY = mouseY
+          // change the target circles position by the
+          // distance the mouse has moved since the last
+          // mousemove event
+          draggingCircle.x += dx
+          draggingCircle.y += dy
+          // redraw all the circles
+                    drawAll()
+        }
+        myTitles();
+        // listen for mouse events
+        $('#canvas').mousedown(function (e) {
+          handleMouseDown(e)
+        })
+        $('#canvas').mousemove(function (e) {
+          handleMouseMove(e)
+        })
+        $('#canvas').mouseup(function (e) {
+          handleMouseUp(e)
+        })
+        $('#canvas').mouseout(function (e) {
+          handleMouseUp(e)
+        })
+        //////////////////////
+        // Utility functions
+
+        function randomColor() {
+          return '#' + Math.floor(Math.random() * 16777215).toString(16)
+        }
+        function theSign() {
+          textos = ['+', '-']
+          return `${textos[Math.floor(Math.random() * textos.length)]}`
+        }
+      }) // end $(function(){});
+    </script>
+  </head>
+  <body>
+    <header>
+      <nav class="nav">
+          <img class="image" src="../../navBar/imageProfile.jpg" alt="">
+        <button class="nav-toggle" aria-label="Abrir menú">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-justify" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M2 12.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/>
+          </svg>
+        </button>
+        <ul class="nav-menu">
+          <li class="nav-menu-item">
+            <a href="../index.html" class="nav-menu-link nav-link">Home</a>
+          </li>
+          <li class="nav-menu-item">
+            <a href="../games/games.html" class="nav-menu-link nav-link">Games</a>
+          </li>
+          <li class="nav-menu-item">
+            <a href="../mathVideos/mathVideos.html" class="nav-menu-link nav-link">Math</a>
+          </li>
+          <li class="nav-menu-item">
+            <a href="../chemistry/chemistry.html" class="nav-menu-link nav-link">Chemitry</a>
+          </li>
+          <li class="nav-menu-item">
+            <a href="#" class="nav-menu-link nav-link">Physics</a>
+          </li>
+          <li class="nav-menu-item">
+            <a href="#" class="nav-menu-link nav-link nav-menu-link_active">Contacto</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <h1 class="experiment">Experiments</h1>
+        <div class="CONTAINER">
+          <h1 class="title" id="anodo"></h1>
+          <canvas id="canvas" width="700" height="500"></canvas>
+          <h1 class="title" id="catodo"></h1>
+        </div>
+  </body>
+</html>

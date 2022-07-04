@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300&display=swap');@import url('https://fonts.googleapis.com/css2?family=Andika+New+Basic&family=Barlow+Semi+Condensed:wght@200&family=Josefin+Sans:ital,wght@0,200;1,100;1,300&family=Kulim+Park:wght@200&family=Outfit:wght@300&family=Press+Start+2P&family=Road+Rage&family=Roboto&family=Roboto+Mono:wght@100&family=VT323&display=swap');
+*{
+    box-sizing: border-box;
+}
+body{
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    background: url('../asteroidWithStone/fondo.jpg');
+    background-size: cover;
+}
+canvas{
+    border-radius: 15px;
+    opacity: 1;
+    box-shadow: 0px 0px 26px wheat;
+    margin-top: 30px;
+    max-width: 100%;
+    font-family: 'Press Start 2P', cursive;
+}
+header{
+    font-family: 'Roboto Mono', monospace;
+
+}
